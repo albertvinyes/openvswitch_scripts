@@ -20,7 +20,7 @@ fi
 
 NIC="eth0"
 IP=$(ip addr show br-ext | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
-GW=$(route -n | grep 'UG[ \t]' | awk '{print $2}')
+GW=$(ip route | grep default | awk '{print $3}')
 MAC=$(ifconfig br-ext | grep "HWaddr\b" | awk '{print $5}')
 
 ifconfig $NIC down
