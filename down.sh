@@ -16,9 +16,10 @@ function reset_ovs {
   IP=$(ip addr show br-ext | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
   GW=$(ip route | grep default | awk '{print $3}')
   MAC=$(ifconfig br-ext | grep "HWaddr\b" | awk '{print $5}')
+  MASK=$(ip addr show br-ext | grep "inet\b" | awk '{print $2}' | cut -d/ -f2)
 
   echo -ne "Giving the physical interface an IP...\t\t\t\t\t"
-  ifconfig $NIC $IP > /dev/null 2>&1
+  ifconfig $NIC $IP/$MASK > /dev/null 2>&1
   check_error
   echo "Done!"
 

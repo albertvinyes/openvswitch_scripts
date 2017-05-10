@@ -42,6 +42,7 @@ function configure_ovs {
   IP=$(ip addr show $NIC | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
   GW=$(ip route | grep default | awk '{print $3}')
   MAC=$(ifconfig $NIC | grep "HWaddr\b" | awk '{print $5}')
+  MASK=$(ip addr show $NIC | grep "inet\b" | awk '{print $2}' | cut -d/ -f2)
 
   echo -ne "Creating an OpenvSwitch bridge to the physical interface...\t\t"
   ovs-vsctl add-br br-ext -- set bridge br-ext other-config:hwaddr=$MAC > /dev/null 2>&1
@@ -66,7 +67,7 @@ function configure_ovs {
   echo "Done!"
 
   echo -ne "Giving the ovs bridge the host IP address...\t\t\t\t"
-  ifconfig br-ext $IP > /dev/null 2>&1
+  ifconfig br-ext $IP/$MASK > /dev/null 2>&1
   check_error
   echo "Done!"
 
